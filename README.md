@@ -14,6 +14,10 @@ Charla para el meet up de [Pioneras Dev](http://pionerasdev.co/).
 
 ![https://techglimpse.com/docker-installation-tutorial-centos/](https://techglimpse.com/wp-content/uploads/2016/03/Container-vs-VMs.jpg)
 
+---
+## Historia de Docker
+![Historia de Docker](img/docker-timeline.png)
+
 ## Por qué son útiles?
 
 - Inician y terminan mucho mas rápido que una máquina virtual
