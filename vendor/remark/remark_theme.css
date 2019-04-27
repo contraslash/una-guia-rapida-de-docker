@@ -17,8 +17,20 @@ img{
   width: 60%;
   height: 100px;
   bottom: 3em;
-  left: 45%;
+  left: 25%;
   background-image: url("../../img/contraslash_logo.png");
+  background-repeat: no-repeat, no-repeat ;
+  background-position: left, right;
+  background-size: contain,contain;
+}
+
+.footnote-pioneras{
+  position: absolute;
+  width: 60%;
+  height: 100px;
+  bottom: 3em;
+  right: 25%;
+  background-image: url("../../img/PIONERAS-05.png");
   background-repeat: no-repeat, no-repeat ;
   background-position: left, right;
   background-size: contain,contain;
@@ -30,7 +42,7 @@ img{
 }
 .right{
   width: 50%;
-  left:50%;
+    left: 60%;
   float: right;
 }
 

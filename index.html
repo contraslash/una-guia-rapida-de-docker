@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Automatización del hogar con Python, Raspberry PI y reconocimiento automático de la voz</title>
+    <title>Una guía rápida de Docker</title>
     <meta charset="utf-8">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -60,7 +60,8 @@ class: center, middle, light
 
 ### Mauricio Collazos
 
-.footnote[]
+.footnote.left[]
+.footnote-pioneras.right[]
 ---
 class: center
 [Repositorio en github](https://github.com/contraslash/una-guia-rapida-de-docker)
@@ -68,6 +69,189 @@ class: center
 
 ---
 
+class: center
+# ¿Qué es un contenedor?
+![https://pixabay.com/photos/hamburg-port-of-hamburg-3021820/](img/hamburg-3021820_1280.jpg)
+
+---
+# ¿Qué es un contenedor?
+
+> Is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings
+
+https://www.docker.com/what-container
+
+---
+class: center
+# ¿Y las máquinas virtuales ya no solucionaban eso?
+
+![https://techglimpse.com/docker-installation-tutorial-centos/](https://techglimpse.com/wp-content/uploads/2016/03/Container-vs-VMs.jpg)
+
+---
+# TAR + Git
+![De donde nacen los contenedores](img/tar+git.png)
+
+---
+# ¿Y porqué son tan populares?
+
+- Inician y terminan mucho mas rápido que una máquina virtual
+- Son portables
+- Escalan rápidamente
+- Se integran rápidamente a arquitecturas orientadas a microservicios
+- Aceleran el proceso de DevOps
+
+[Why docker is so popular](http://www.channelfutures.com/open-source/why-docker-so-popular-explaining-rise-containers-and-docker)
+---
+class: center
+
+# Historia de Docker
+![Historia de Docker](img/docker-timeline.png)
+
+---
+# Alternativas a Docker
+
+- [rkt](https://coreos.com/rkt/)
+- [runC](https://github.com/opencontainers/runc)
+- [lxC](https://linuxcontainers.org/)
+- [Singularity](https://singularity.lbl.gov/)
+
+[Más opciones](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html)
+---
+class: center
+# Comandos de Docker
+
+![Comandos de Docker](img/docker-commands.png)
+---
+# Dockerfile
+
+```Dockerfile
+FROM contraslash/alpine-django-deploy-common:latest
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code/
+RUN pip install --no-cache-dir -r requirements.txt
+
+ADD . /code/
+
+EXPOSE 8000
+
+CMD ["uwsgi", "--ini", "uwsgi.ini"]
+```
+---
+# Comandos
+
+`docker build`: Este comando toma un archivo Dockerfile y lo transforma en una imágen, creando las capas necesarias y almacenándolas en el equipo local con la etiqueta definida con el parámetro -t
+
+```bash
+docker build -t contraslash/blog-django-pioneras .
+```
+
+---
+# Comandos
+`docker tag`: A partir de una imagen base, se crea una nueva con la etiqueta definida
+
+```bash
+docker tag contraslash/blog-django-pioneras registy.contraslash.com:5000/contraslash/blog-django-pioneras
+```
+---
+# Comandos
+
+`docker images`: Lista las imágenes construidas y disponibles en el sistema
+
+```bash
+docker images
+```
+---
+# Comandos
+`docker run`: Crea un contenedor a partir de una imagen existente en el sistema, existe se buscará la imagen en el registro por defecto de docker Docker Hub. Este comando suele venir con directivas importantes de ejecución como configuraciones por variables de ambiente con el argumento --env , directivas para ejecutar el contenedor en segundo plano con --detach, el nombre con el que se identificará este contenedor con--name puertos que se van a mapear al equipo anfitrión con --publish , carpetas compartidas con el anfitrión con --volume y muchos otros argumentos para definir por ejemplo límites en procesadores y memoria RAM, redes a la que se conectará, servidores DNS, direcciones IP todos disponibles en la documentación oficial del comando run.
+```bash
+docker run \
+    --env DEBUG=True \
+    --name blog_django_pioneras \
+    --publish 9000:8000 \
+    --volume ${PWD}/media:/code/media \
+    --detach \
+    contraslash/blog-django-pioneras
+```
+---
+# Comandos
+
+`docker ps`: Muestra los contenedores ejecutándose o detenidos en el sistema
+
+```bash
+docker ps
+```
+---
+# Comandos
+
+`docker stop`: Detiene un contenedor en ejecución
+
+```bash
+docker stop blog_django_pioneras
+```
+---
+# Comandos
+
+`docker start`: Re inicia la ejecución de un contenedor deteindo
+```bash
+docker start blog_django_pioneras
+```
+---
+# Comandos
+
+`docker inspect`: Inspecciona un contenedor mostrando toda su configuración
+
+```bash
+docker inspect blog_django_pioneras
+```
+---
+# Comandos
+
+`docker logs`: Muestra los registros emitidos por el contenedor especificado
+
+```bash
+docker logs blog_django_pioneras
+```
+---
+# Comandos
+
+`docker rm`: Elimina un contenedor detenido
+
+```bash
+docker stop blog_django_pioneras && docker rm blog_django_pioneras
+```
+---
+# Comandos
+
+`docker login`: Inicia sesión con un registro de docker. Si no se especifica un nombre de registro, se toma por defecto Docker Hub.
+
+```bash
+docker login registry.contraslash.com:5000
+```
+---
+# Comandos
+
+`docker push`: Sube una imagen al registro determinado
+
+```bash
+docker push registry.contraslash.com:5000
+```
+---
+# Comandos
+
+`docker pull`: Descarga una imagen desde un registro
+
+```bash
+docker pull contraslash/alpine-django-deploy-common-with-pillow
+```
+---
+# Comandos
+
+`docker rmi`: Elimina una imagen
+
+```bash
+
+docker rmi  contraslash/alpine-django-deploy-common-with-pillow
+```
 
 </textarea>
 <script src="vendor/remark/remark.min.js">
