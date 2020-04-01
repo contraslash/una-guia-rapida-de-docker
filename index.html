@@ -61,7 +61,7 @@ class: center, middle, light
 ### Mauricio Collazos
 
 .footnote.left[]
-.footnote-pioneras.right[]
+
 ---
 class: center
 [Repositorio en github](https://github.com/contraslash/una-guia-rapida-de-docker)
@@ -113,36 +113,66 @@ class: center
 - [runC](https://github.com/opencontainers/runc)
 - [lxC](https://linuxcontainers.org/)
 - [Singularity](https://singularity.lbl.gov/)
+- [podman](https://podman.io/)
+- [katacontainers](https://katacontainers.io/)
+- [Firecracker](https://firecracker-microvm.github.io/)
 
 [Más opciones](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html)
+
+---
+# Una aplicacion sencilla
+
+```bash
+mkdir django_starter
+cd django_starter
+python -m venv django_starter_env
+source django_starter_env/bin/activate
+echo "django_starter_env" > .gitignore
+echo "*.pyc" >> .gitignore
+pip install django
+pip freeze >  requirements.txt
+django-admin startproject django_starter .
+./manage.py runserver
+```
+
+---
+
+# TL;DR
+
+```bash
+cat > Dockerfile << EOF
+FROM ubuntu:latest
+
+RUN apt update
+RUN apt install python3-pip -y
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code
+RUN pip3 install  -r requirements.txt
+
+ADD . /code/
+
+EXPOSE 8000
+
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
+EOF
+
+docker build -t ma0collazos/django_starter .
+docker run -p 9000:8000 ma0collazos/django_starter
+```
 ---
 class: center
 # Comandos de Docker
 
 ![Comandos de Docker](img/docker-commands.png)
 ---
-# Dockerfile
-
-```Dockerfile
-FROM contraslash/alpine-django-deploy-common:latest
-RUN mkdir /code
-WORKDIR /code
-ADD requirements.txt /code/
-RUN pip install --no-cache-dir -r requirements.txt
-
-ADD . /code/
-
-EXPOSE 8000
-
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
-```
----
 # Comandos
 
 `docker build`: Este comando toma un archivo Dockerfile y lo transforma en una imágen, creando las capas necesarias y almacenándolas en el equipo local con la etiqueta definida con el parámetro -t
 
 ```bash
-docker build -t contraslash/blog-django-pioneras .
+docker build -t ma0collazos/django_starter .
 ```
 
 ---
@@ -150,7 +180,7 @@ docker build -t contraslash/blog-django-pioneras .
 `docker tag`: A partir de una imagen base, se crea una nueva con la etiqueta definida
 
 ```bash
-docker tag contraslash/blog-django-pioneras registy.contraslash.com:5000/contraslash/blog-django-pioneras
+docker tag ma0collazos/django_starter registy.contraslash.com:5000/ma0collazos/django_starter
 ```
 ---
 # Comandos
@@ -166,11 +196,11 @@ docker images
 ```bash
 docker run \
     --env DEBUG=True \
-    --name blog_django_pioneras \
+    --name django_starter \
     --publish 9000:8000 \
     --volume ${PWD}/media:/code/media \
     --detach \
-    contraslash/blog-django-pioneras
+    ma0collazos/django_starter
 ```
 ---
 # Comandos
@@ -186,14 +216,14 @@ docker ps
 `docker stop`: Detiene un contenedor en ejecución
 
 ```bash
-docker stop blog_django_pioneras
+docker stop django_starter
 ```
 ---
 # Comandos
 
 `docker start`: Re inicia la ejecución de un contenedor deteindo
 ```bash
-docker start blog_django_pioneras
+docker start django_starter
 ```
 ---
 # Comandos
@@ -201,7 +231,7 @@ docker start blog_django_pioneras
 `docker inspect`: Inspecciona un contenedor mostrando toda su configuración
 
 ```bash
-docker inspect blog_django_pioneras
+docker inspect django_starter
 ```
 ---
 # Comandos
@@ -209,7 +239,7 @@ docker inspect blog_django_pioneras
 `docker logs`: Muestra los registros emitidos por el contenedor especificado
 
 ```bash
-docker logs blog_django_pioneras
+docker logs django_starter
 ```
 ---
 # Comandos
@@ -217,7 +247,7 @@ docker logs blog_django_pioneras
 `docker rm`: Elimina un contenedor detenido
 
 ```bash
-docker stop blog_django_pioneras && docker rm blog_django_pioneras
+docker stop django_starter && docker rm django_starter
 ```
 ---
 # Comandos
@@ -225,7 +255,8 @@ docker stop blog_django_pioneras && docker rm blog_django_pioneras
 `docker login`: Inicia sesión con un registro de docker. Si no se especifica un nombre de registro, se toma por defecto Docker Hub.
 
 ```bash
-docker login registry.contraslash.com:5000
+# docker login registry.contraslash.com:5000
+docker login
 ```
 ---
 # Comandos
@@ -233,7 +264,8 @@ docker login registry.contraslash.com:5000
 `docker push`: Sube una imagen al registro determinado
 
 ```bash
-docker push registry.contraslash.com:5000
+# docker push registry.contraslash.com:5000/ma0collazos/django_starter
+docker push ma0collazos/django_starter
 ```
 ---
 # Comandos
@@ -241,7 +273,7 @@ docker push registry.contraslash.com:5000
 `docker pull`: Descarga una imagen desde un registro
 
 ```bash
-docker pull contraslash/alpine-django-deploy-common-with-pillow
+docker pull ma0collazos/django_starter
 ```
 ---
 # Comandos
@@ -250,7 +282,7 @@ docker pull contraslash/alpine-django-deploy-common-with-pillow
 
 ```bash
 
-docker rmi  contraslash/alpine-django-deploy-common-with-pillow
+docker rmi  ma0collazos/django_starter
 ```
 ---
 # Huir antes de las preguntas
