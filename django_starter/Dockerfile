@@ -1,11 +1,9 @@
-FROM ubuntu:latest
+FROM python:3.7-alpine
 
-RUN apt update
-RUN apt install python3-pip -y
 RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt /code
-RUN pip3 install  -r requirements.txt
+RUN pip3 install --no-cache-dir  -r requirements.txt
 
 ADD . /code/
 

@@ -285,6 +285,106 @@ docker pull ma0collazos/django_starter
 docker rmi  ma0collazos/django_starter
 ```
 ---
+# Optimizacion
+
+Ubuntu es una distribucion completa, reducir por una minima
+
+```bash
+FROM python:3.7-alpine
+
+RUN apt update
+RUN apt install python3-pip -y
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code
+RUN pip3 install  -r requirements.txt
+
+ADD . /code/
+
+EXPOSE 8000
+
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+
+---
+# Optimizacion
+
+Hacer los cambios para que el Dockerfile funcione
+
+```bash
+FROM python:3.7-alpine
+
+RUN apk update
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code
+RUN pip3 install  -r requirements.txt
+
+ADD . /code/
+
+EXPOSE 8000
+
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+---
+# Optimizacion
+
+Olvidarnos de los caches
+
+```bash
+FROM python:3.7-alpine
+
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code
+RUN pip3 --no-cache-dir install  -r requirements.txt
+
+ADD . /code/
+
+EXPOSE 8000
+
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+---
+# Optimizacion
+
+Eliminar los archivos innecesarios
+
+```bash
+echo "django_starter_env" > .dockerignore
+```
+---
+# Optimizacion
+
+Reduzca en lo posible las operaciones que creen capas extras
+
+```bash
+RUN apk update && \
+    apk add --no-cache --virtual .build-deps linux-headers binutils gcc musl-dev build-base zlib-dev pcre-dev && \
+    apk add --no-cache mariadb-dev mariadb-client jpeg-dev  uwsgi uwsgi-python3 && \
+    LIBRARY_PATH=/lib:/usr/lib pip install --no-cache-dir uwsgi==2.0.18 mysqlclient==1.4.2 && \
+    apk del .build-deps
+```
+
+---
+# Optimizacion
+
+Etiquete su imagen
+
+```bash
+LABEL maintainer="ma0c <ma0@contraslash.com>" \
+    org.label-schema.name="Alpine Django Deploy Common" \
+    org.label-schema.description="A base image to build Django images on top of Alpine Linux" \
+    org.label-schema.url="https://contraslash.com" \
+    org.label-schema.vcs-url="https://github.com/contraslash/docker-images/tree/master/alpine-django-deploy-common"
+```
+---
+# Optimizacion
+
+- [Multi-Stage Build](https://docs.docker.com/develop/develop-images/multistage-build/)
+- [Mejores practicas](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+- [Algunas de mis imagenes](https://github.com/contraslash/docker-images)
+---
 # Huir antes de las preguntas
 ![huir](https://media.giphy.com/media/3o7ZePMv221orZKz84/giphy.gif)
 </textarea>
